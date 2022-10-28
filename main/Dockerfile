@@ -1,9 +1,11 @@
 FROM ubuntu:latest
 
+EXPOSE 1812-1813/udp
+
 RUN apt-get update -y && apt-get upgrade -y
 
-RUN apt-get install nano freeradius freeradius-mysql
+RUN apt-get install -y nano freeradius freeradius-mysql
 
-COPY ./freeradius /etc/freeradius
+#COPY ./freeradius /etc/freeradius
 
-ENTRYPOINT [ "/etc/init.d/freeradius", "start" ]
+ENTRYPOINT [ "/usr/sbin/freeradius", "-f" ]
