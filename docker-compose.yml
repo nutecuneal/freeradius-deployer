@@ -2,27 +2,58 @@ version: '3.7'
 
 services:
   radius:
-    image: ./main
+    build: ./main
     container_name: "radius-server"
     ports:
-      - "1812-1813/udp"
+      - "0.0.0.0:1812-1813:1812-1813/udp"
     networks:
-      - radius-network
+      radius-network:
+        ipv4_address: "172.18.0.3"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: "always"
+    #healthcheck:
+    #  test:
+    #    [
+    #      "CMD",
+    #      "radtest",
+    #      "usertest",
+    #      "usertestpassword",
+    #      "127.0.0.1:1812"
+    #      "0",
+    #      "testing123",
+    #      "|| exit 1"
+    #    ]
+    #  interval: 3m
+    #  timeout: 30s
+    #  retries: 3
+    #  start_period: 30s
+
   db:
     image: mariadb:10.9.3
     container_name: "radius-db"
+    env_file:
+      - ./database/.env
     ports:
       - "127.0.0.1:3306:3306"
-    volumes:
-      - /hostPath/database:/var/lib/mysql
+    #volumes:
+    #  - /home/jytaloramon/Development/freeradius-deploy/db:/var/lib/mysql
     networks:
-      - radius-network
+      radius-network:
+        ipv4_address: "172.18.0.2"
     restart: "always"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 3m
+      timeout: 30s
+      retries: 3
+      start_period: 0s
 
 networks:
   radius-network:
     ipam:
       driver: default
       config:
-        - subnet: "172.16.1.0/24"
+        - subnet: "172.18.0.0/28"
+          gateway: "172.18.0.1"
