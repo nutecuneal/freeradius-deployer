@@ -1,5 +1,7 @@
 CREATE DATABASE db_radius;
 
+# This stores RADIUS accounting data.
+## RADIUS accounting data describes a service session.
 CREATE TABLE IF NOT EXISTS radacct (
   radacctid bigint(21) NOT NULL auto_increment,
   acctsessionid varchar(64) NOT NULL default '',
@@ -47,55 +49,62 @@ CREATE TABLE IF NOT EXISTS radacct (
   KEY class (class)
 ) ENGINE = INNODB;
 
+# This has identical logic to the first line of a user´s
+## file entry. It has check and control pairs which are differentiated by the operator used.
 CREATE TABLE IF NOT EXISTS radcheck (
   id int(11) unsigned NOT NULL auto_increment,
   username varchar(64) NOT NULL default '',
-  attribute varchar(64)  NOT NULL default '',
+  attribute varchar(64) NOT NULL default '',
   op char(2) NOT NULL DEFAULT '==',
   value varchar(253) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username(32))
 );
 
+# Identical to radcheck but indexed by group instead of user.
 CREATE TABLE IF NOT EXISTS radgroupcheck (
   id int(11) unsigned NOT NULL auto_increment,
   groupname varchar(64) NOT NULL default '',
-  attribute varchar(64)  NOT NULL default '',
+  attribute varchar(64) NOT NULL default '',
   op char(2) NOT NULL DEFAULT '==',
-  value varchar(253)  NOT NULL default '',
-  PRIMARY KEY  (id),
+  value varchar(253) NOT NULL default '',
+  PRIMARY KEY (id),
   KEY groupname (groupname(32))
 );
 
+# Identical to radcheck but indexed by group instead of user.
 CREATE TABLE IF NOT EXISTS radgroupreply (
   id int(11) unsigned NOT NULL auto_increment,
   groupname varchar(64) NOT NULL default '',
-  attribute varchar(64)  NOT NULL default '',
+  attribute varchar(64) NOT NULL default '',
   op char(2) NOT NULL DEFAULT '=',
-  value varchar(253)  NOT NULL default '',
-  PRIMARY KEY  (id),
+  value varchar(253) NOT NULL default '',
+  PRIMARY KEY (id),
   KEY groupname (groupname(32))
 );
 
+# Contains reply pairs to add if the radcheck check items matched.
 CREATE TABLE IF NOT EXISTS radreply (
   id int(11) unsigned NOT NULL auto_increment,
   username varchar(64) NOT NULL default '',
   attribute varchar(64) NOT NULL default '',
   op char(2) NOT NULL DEFAULT '=',
   value varchar(253) NOT NULL default '',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username(32))
 );
 
+# Contains mappings between users and groups.
 CREATE TABLE IF NOT EXISTS radusergroup (
   id int(11) unsigned NOT NULL auto_increment,
   username varchar(64) NOT NULL default '',
   groupname varchar(64) NOT NULL default '',
   priority int(11) NOT NULL default '1',
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username(32))
 );
 
+# This contains a record of the result of an authentication attempt.
 CREATE TABLE IF NOT EXISTS radpostauth (
   id int(11) NOT NULL auto_increment,
   username varchar(64) NOT NULL default '',
@@ -103,11 +112,13 @@ CREATE TABLE IF NOT EXISTS radpostauth (
   reply varchar(32) NOT NULL default '',
   authdate timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   class varchar(64) default NULL,
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   KEY username (username),
   KEY class (class)
 ) ENGINE = INNODB;
 
+# "NAS - Network Access Servers" definitions of RADIUS clients.
+## Equivalent to client.conf in radius files.
 CREATE TABLE IF NOT EXISTS nas (
   id int(10) NOT NULL auto_increment,
   nasname varchar(128) NOT NULL,
