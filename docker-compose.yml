@@ -31,7 +31,7 @@ services:
 
   db:
     image: 'mariadb:10.9.4'
-    container_name: 'glpi-db'
+    container_name: 'freeradius-db'
     #ports:
     #  - '127.0.0.1:3306:3306'
     volumes:
