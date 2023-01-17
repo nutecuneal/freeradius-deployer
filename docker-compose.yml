@@ -1,29 +1,28 @@
-version: '3.7'
+version: '3.9'
 
 services:
-  radius:
-    build: ./main
-    container_name: "radius-server"
+  app:
+    build: './app'
+    container_name: 'freeradius-app'
     ports:
-      - "0.0.0.0:1812-1813:1812-1813/udp"
+      - '1812-1813:1812-1813/udp'
     networks:
-      radius-network:
-        ipv4_address: "172.18.0.3"
+      - freeradius-net
     depends_on:
       db:
         condition: service_healthy
-    restart: "always"
+    restart: unless-stopped
     #healthcheck:
     #  test:
     #    [
-    #      "CMD",
-    #      "radtest",
-    #      "usertest",
-    #      "usertestpassword",
-    #      "127.0.0.1:1812"
-    #      "0",
-    #      "testing123",
-    #      "|| exit 1"
+    #      'CMD',
+    #      'radtest',
+    #      'usertest',
+    #      'usertestpassword',
+    #      '127.0.0.1:1812',
+    #      '0',
+    #      'testing123',
+    #      '|| exit 1'
     #    ]
     #  interval: 3m
     #  timeout: 30s
@@ -31,29 +30,39 @@ services:
     #  start_period: 30s
 
   db:
-    image: mariadb:10.9.3
-    container_name: "radius-db"
-    env_file:
-      - ./database/.env
-    ports:
-      - "127.0.0.1:3306:3306"
-    #volumes:
-    #  - /home/jytaloramon/Development/freeradius-deploy/db:/var/lib/mysql
+    image: 'mariadb:10.9.4'
+    container_name: 'glpi-db'
+    #ports:
+    #  - '127.0.0.1:3306:3306'
+    volumes:
+      - '$(pwd)/lib_mysql:/var/lib/mysql'
+    environment:
+      - MARIADB_ROOT_PASSWORD=rootpass
+      - MARIADB_ROOT_HOST=localhost
+      - MARIADB_USER=username
+      - MARIADB_PASSWORD=userpass
     networks:
-      radius-network:
-        ipv4_address: "172.18.0.2"
-    restart: "always"
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 3m
-      timeout: 30s
-      retries: 3
-      start_period: 0s
+      - freeradius-net
+    restart: unless-stopped
+    #healthcheck:
+    #  test:
+    #    [
+    #      'CMD',
+    #      'mysqladmin',
+    #      'ping',
+    #      '--host=localhost',
+    #      '--user=root'
+    #    ]
+    #  interval: 3m
+    #  timeout: 30s
+    #  retries: 3
+    #  start_period: 30s
 
 networks:
-  radius-network:
+  freeradius-net:
+    name: 'freeradius-net'
     ipam:
       driver: default
       config:
-        - subnet: "172.18.0.0/28"
-          gateway: "172.18.0.1"
+        - subnet: '172.18.0.0/28'
+          gateway: 172.18.0.1
