@@ -1,15 +1,16 @@
-FROM ubuntu:22.10
+FROM alpine:3.17.1
 
 EXPOSE 1812-1813/udp
 
-RUN apt-get update -y
-RUN apt-get upgrade -y
+RUN apk update
+RUN apk upgrade
 
-RUN apt-get install freeradius=3.* \
-    freeradius-mysql=3.* -y
+RUN apk add --no-cache \
+    freeradius=3.0.26-r0 \
+    freeradius-mysql=3.0.26-r0
 
-RUN apt-get install nano -y
+WORKDIR /etc/raddb
 
-#COPY ./freeradius /etc/freeradius
+RUN rm sites-enabled/*
 
-ENTRYPOINT [ "/usr/sbin/freeradius", "-f" ]
+ENTRYPOINT [ "/usr/sbin/radiusd", "-f" ]
