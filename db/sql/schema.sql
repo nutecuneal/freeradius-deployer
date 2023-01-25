@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS radacct (
   calledstationid varchar(50) NOT NULL default '',
   callingstationid varchar(50) NOT NULL default '',
   acctterminatecause varchar(32) NOT NULL default '',
-  servicetyperaphael varchar(32) default NULL,
+  servicetype varchar(32) default NULL,
   framedprotocol varchar(32) default NULL,
   framedipaddress varchar(15) NOT NULL default '',
   framedipv6address varchar(45) NOT NULL default '',
