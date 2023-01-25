@@ -6,6 +6,8 @@ services:
     container_name: 'freeradius-app'
     ports:
       - '1812-1813:1812-1813/udp'
+    volumes:
+      - '$(pwd)/etc_raddb:/etc/raddb'
     networks:
       - freeradius-net
     depends_on:
