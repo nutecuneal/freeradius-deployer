@@ -52,7 +52,7 @@ RUN rm radiusd.conf
 RUN rm -rf sites-enabled/*
 RUN rm mods-available/sql
 
-COPY ${CONF_RADIUSD} ./
+COPY ${CONF_RADIUSD} ./radiusd.conf
 COPY ${CONF_MOD_SQL} mods-available/freeradius-sql
 COPY ${CONF_SERVER_LOCAL} sites-available/freeradius-local
 COPY ${CONF_SERVER_HOST} sites-available/freeradius
