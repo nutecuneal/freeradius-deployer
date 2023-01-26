@@ -1,0 +1,112 @@
+server localhost {
+
+	listen {
+		type = auth
+
+		ipaddr = 127.0.0.1
+		port = 11812
+	}
+
+	client localhost-test {
+
+		ipaddr = 127.0.0.1
+
+		proto = *
+
+		secret = localtest123
+
+		nas_type = other
+
+		require_message_authenticator = no
+	}
+
+	authorize {
+		filter_username
+
+		preprocess
+
+		chap
+
+		mschap
+
+		digest
+
+		suffix
+
+		eap {
+			ok = return
+		}
+
+		files
+		-sql
+
+		expiration
+		logintime
+
+		pap
+
+		Autz-Type New-TLS-Connection {
+			ok
+		}
+	}
+
+	authenticate {
+		Auth-Type PAP {
+			pap
+		}
+
+		Auth-Type CHAP {
+			chap
+		}
+
+		Auth-Type MS-CHAP {
+			mschap
+		}
+
+		mschap
+
+		digest
+
+		eap
+	}
+
+	preacct {
+		preprocess
+
+		acct_unique
+
+		suffix
+
+		files
+	}
+
+	post-auth {
+
+		if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name)) {
+			update reply {
+				&User-Name !* ANY
+			}
+		}
+		update {
+			&reply: += &session-state:
+		}
+
+		exec
+
+		remove_reply_message_if_eap
+
+		Post-Auth-Type REJECT {
+			attr_filter.access_reject
+
+			eap
+
+			remove_reply_message_if_eap
+		}
+
+		if (EAP-Key-Name && &reply:EAP-Session-Id) {
+			update reply {
+				&EAP-Key-Name := &reply:EAP-Session-Id
+			}
+		}
+	}
+}

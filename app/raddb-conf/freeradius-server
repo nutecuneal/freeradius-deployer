@@ -1,0 +1,40 @@
+server global {
+
+	listen {
+		type = auth
+
+		ipaddr = *
+		port = 0
+	}
+
+	listen {
+		type = acct
+
+		ipaddr = *
+		port = 0
+	}
+
+	authorize {
+		# config....
+	}
+
+	authenticate {
+		# config....
+	}
+
+	preacct {
+		# config....
+	}
+
+	accounting {
+		# config....
+	}
+
+	session {
+		# config....
+	}
+
+	post-auth {
+		# config....
+	}
+}
