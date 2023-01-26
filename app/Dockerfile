@@ -10,8 +10,10 @@ RUN apk add --no-cache \
     freeradius-mysql=3.0.26-r0 \
     freeradius-sqlite=3.0.26-r0
 
+COPY ./entrypoint.sh /
+
+RUN chmod +x /entrypoint.sh
+
 WORKDIR /etc/raddb
 
-RUN rm sites-enabled/*
-
-ENTRYPOINT [ "/usr/sbin/radiusd", "-f" ]
+ENTRYPOINT [ "/entrypoint.sh"]
