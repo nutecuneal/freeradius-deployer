@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # Start Freeradius App
-##radiusd -f
-
-/bin/sh
+radiusd -f
 
 return 0
