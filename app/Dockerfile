@@ -8,7 +8,8 @@ RUN apk upgrade
 RUN apk add --no-cache \
     freeradius=3.0.26-r0 \
     freeradius-mysql=3.0.26-r0 \
-    freeradius-sqlite=3.0.26-r0
+    freeradius-sqlite=3.0.26-r0 \
+    freeradius-utils=3.0.26-r0
 
 COPY ./entrypoint.sh /
 
