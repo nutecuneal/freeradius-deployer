@@ -52,8 +52,8 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=rootpass
       - MARIADB_ROOT_HOST=localhost
-      - MARIADB_USER=username
-      - MARIADB_PASSWORD=userpass
+      - MARIADB_USER=userdb
+      - MARIADB_PASSWORD=userdbpass
     networks:
       - freeradius-net
     restart: unless-stopped
