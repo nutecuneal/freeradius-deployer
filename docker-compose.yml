@@ -2,12 +2,23 @@ version: '3.9'
 
 services:
   app:
-    build: './app'
+    build:
+      context: './app'
+      dockerfile: 'Dockerfile'
+      args:
+        - CONF_RADIUSD=raddb-conf/radiusd.conf
+        - CONF_MOD_SQL=raddb-conf/freeradius-mod-sql
+        - CONF_SERVER_LOCAL=raddb-conf/freeradius-server-local
+        - CONF_SERVER_HOST=raddb-conf/freeradius-server
     container_name: 'freeradius-app'
     ports:
       - '1812-1813:1812-1813/udp'
-    volumes:
-      - '$(pwd)/etc_raddb:/etc/raddb'
+    environment:
+      - DB_HOST=freeradius-db
+      - DB_PORT=3306
+      - DB_USER=userdb
+      - DB_PASSWORD=userdbpass
+      - DB_NAME=radiusdb
     networks:
       - freeradius-net
     depends_on:
