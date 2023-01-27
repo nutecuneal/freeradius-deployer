@@ -8,6 +8,8 @@ services:
     container_name: 'freeradius-app'
     ports:
       - '1812-1813:1812-1813/udp'
+    volumes:
+      - '$(pwd)/log_radius:/var/log/radius'
     environment:
       - DB_HOST=freeradius-db
       - DB_PORT=3306
