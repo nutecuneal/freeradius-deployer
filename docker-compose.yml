@@ -22,22 +22,22 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
-    #healthcheck:
-    #  test:
-    #    [
-    #      'CMD',
-    #      'radtest',
-    #      'usertest',
-    #      'usertestpassword',
-    #      '127.0.0.1:1812',
-    #      '0',
-    #      'testing123',
-    #      '|| exit 1'
-    #    ]
-    #  interval: 3m
-    #  timeout: 30s
-    #  retries: 3
-    #  start_period: 30s
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'radtest',
+          'bobtest',
+          '1234',
+          '127.0.0.1:11812',
+          '0',
+          'localtest123',
+          '|| exit 1'
+        ]
+      interval: 3m
+      timeout: 30s
+      retries: 3
+      start_period: 30s
 
   db:
     image: 'mariadb:10.9.4'
@@ -54,19 +54,19 @@ services:
     networks:
       - freeradius-net
     restart: unless-stopped
-    #healthcheck:
-    #  test:
-    #    [
-    #      'CMD',
-    #      'mysqladmin',
-    #      'ping',
-    #      '--host=localhost',
-    #      '--user=root'
-    #    ]
-    #  interval: 3m
-    #  timeout: 30s
-    #  retries: 3
-    #  start_period: 30s
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '--host=localhost',
+          '--user=root'
+        ]
+      interval: 3m
+      timeout: 30s
+      retries: 3
+      start_period: 30s
 
 networks:
   freeradius-net:
