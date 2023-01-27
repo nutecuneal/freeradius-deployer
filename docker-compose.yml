@@ -5,20 +5,15 @@ services:
     build:
       context: './app'
       dockerfile: 'Dockerfile'
-      args:
-        - CONF_RADIUSD=raddb-conf/radiusd.conf
-        - CONF_MOD_SQL=raddb-conf/freeradius-mod-sql
-        - CONF_SERVER_LOCAL=raddb-conf/freeradius-server-local
-        - CONF_SERVER_HOST=raddb-conf/freeradius-server
     container_name: 'freeradius-app'
     ports:
       - '1812-1813:1812-1813/udp'
     environment:
       - DB_HOST=freeradius-db
       - DB_PORT=3306
-      - DB_USER=userdb
-      - DB_PASSWORD=userdbpass
-      - DB_NAME=radiusdb
+      - DB_USER=yourdbuser
+      - DB_PASSWORD=yourdbuserpass
+      - DB_NAME=yourdbname
     networks:
       - freeradius-net
     depends_on:
@@ -52,8 +47,8 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=rootpass
       - MARIADB_ROOT_HOST=localhost
-      - MARIADB_USER=userdb
-      - MARIADB_PASSWORD=userdbpass
+      - MARIADB_USER=yourdbuser
+      - MARIADB_PASSWORD=yourdbuserpass
     networks:
       - freeradius-net
     restart: unless-stopped
