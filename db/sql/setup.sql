@@ -1,21 +1,18 @@
-
 /*
  * GRANTs: User radius
  */
 
 GRANT
     SELECT
-ON db_radius.* TO 'radius_user'@'%';
+ON db_radius.* TO 'yourdbuser'@'%';
 
 GRANT 
-    DELETE,
     INSERT,
     UPDATE
-on db_radius.radacct TO 'radius_user'@'%';
+on db_radius.radacct TO 'yourdbuser'@'%';
 
 GRANT 
-    DELETE,
     INSERT,
     UPDATE
-on db_radius.radpostauth TO 'radius_user'@'%';
+on db_radius.radpostauth TO 'yourdbuser'@'%';
 
