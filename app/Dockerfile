@@ -4,8 +4,8 @@ EXPOSE 1812-1813/udp
 
 # Variables
 ARG CONF_RADIUSD=raddb/radiusd.conf
-ARG CONF_MODS=raddb/mods-available
-ARG CONF_SITES=raddb/sites-available
+ARG DIR_MODS=raddb/mods-available
+ARG DIR_SITES=raddb/sites-available
 
 # installation: app and dependencies
 RUN apk update
@@ -43,7 +43,7 @@ COPY ${CONF_RADIUSD} radiusd.conf
 
 ## Config: sites-{available,enable} 
 RUN mv sites-available sites-available-tmp
-COPY ${CONF_SITES} sites-available
+COPY ${DIR_SITES} sites-available
 
 RUN rm -rf sites-enabled/*
 
@@ -55,7 +55,7 @@ RUN rm -rf sites-available-tmp
 
 ## Config: mods-{available,enable}
 RUN mv mods-available mods-available-tmp
-COPY ${CONF_MODS} mods-available
+COPY ${DIR_MODS} mods-available
 
 RUN ln -s /etc/raddb/mods-available/* mods-enabled
 
