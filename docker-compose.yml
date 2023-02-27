@@ -19,28 +19,23 @@ services:
       - DB_USER=userdb
       - DB_PASSWORD=userdbpass
       - DB_NAME=radiusdb
+      - RADTEST_HOST=localhost
+      - RADTEST_PORT=11812
+      - RADTEST_SECRET=localtest123
+      - RADTEST_USER=bobtest
+      - RADTEST_PASSOWRD=1234
     networks:
       - freeradius-net
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
-    #healthcheck:
-    #  test:
-    #    [
-    #      'CMD',
-    #      'radtest',
-    #      'usertest',
-    #      'usertestpassword',
-    #      '127.0.0.1:1812',
-    #      '0',
-    #      'testing123',
-    #      '|| exit 1'
-    #    ]
-    #  interval: 3m
-    #  timeout: 30s
-    #  retries: 3
-    #  start_period: 30s
+    healthcheck:
+      test: [ 'CMD', '/healthcheck.sh' ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 10s
 
   db:
     image: 'mariadb:10.9.4'
@@ -57,19 +52,19 @@ services:
     networks:
       - freeradius-net
     restart: unless-stopped
-    #healthcheck:
-    #  test:
-    #    [
-    #      'CMD',
-    #      'mysqladmin',
-    #      'ping',
-    #      '--host=localhost',
-    #      '--user=root'
-    #    ]
-    #  interval: 3m
-    #  timeout: 30s
-    #  retries: 3
-    #  start_period: 30s
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '--host=localhost',
+          '--user=root'
+        ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 10s
 
 networks:
   freeradius-net:
@@ -78,4 +73,3 @@ networks:
       driver: default
       config:
         - subnet: '172.18.0.0/28'
-          gateway: 172.18.0.1

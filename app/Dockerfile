@@ -20,8 +20,8 @@ RUN apk add --no-cache \
     freeradius-eap=3.0.26-r0
 
 COPY ./entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-
+COPY ./healthcheck.sh /
+RUN chmod +x /entrypoint.sh /healthcheck.sh
 
 WORKDIR /etc/ssl/certs
 
