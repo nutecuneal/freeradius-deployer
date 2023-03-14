@@ -1,5 +1,3 @@
-CREATE DATABASE db_radius;
-
 /* 
  * This stores RADIUS accounting data.
  * RADIUS accounting data describes a service session.
