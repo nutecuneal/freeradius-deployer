@@ -25,7 +25,7 @@
 #
 
 sql {
-	dialect = "mysql"
+	dialect = $ENV{DB_DIALECT}
 	driver = "rlm_sql_${dialect}"
 
 	#mysql {
