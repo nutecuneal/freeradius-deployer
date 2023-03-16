@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: './app'
+      dockerfile: 'Dockerfile'
+      args:
+        - CONF_RADIUSD=raddb-conf/radiusd.conf
+        - CONF_MOD_SQL=raddb-conf/freeradius-mod-sql
+        - CONF_SERVER_LOCAL=raddb-conf/freeradius-server-local
+        - CONF_SERVER_HOST=raddb-conf/freeradius-server
+    container_name: 'freeradius-app'
+    ports:
+      - '1812-1813:1812-1813/udp'
+    environment:
+      - DB_DIALECT=postgresql
+      - DB_HOST=freeradius-db
+      - DB_PORT=5432
+      - DB_USER=userdb
+      - DB_PASSWORD=userdbpass
+      - DB_NAME=radiusdb
+      - RADTEST_HOST=localhost
+      - RADTEST_PORT=11812
+      - RADTEST_SECRET=localtest123
+      - RADTEST_USER=bobtest
+      - RADTEST_PASSOWRD=1234
+    networks:
+      - freeradius-net
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [ 'CMD', '/healthcheck.sh' ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 10s
+
+  db:
+    image: 'postgres:15.2-alpine3.17'
+    container_name: 'freeradius-db'
+    #ports:
+    #  - '127.0.0.1:5432:5432'
+    volumes:
+      - '$(pwd)/lib_postgresql:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD_FILE=/run/secrets/root-passwd
+      - POSTGRES_DB=db_radius
+    networks:
+      - freeradius-net
+    restart: unless-stopped
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U root', '-d $$POSTGRES_DB' ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 10s
+
+networks:
+  freeradius-net:
+    name: 'freeradius-net'
+    ipam:
+      driver: default
+      config:
+        - subnet: '172.18.0.0/28'
